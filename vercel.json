@@ -1,0 +1,7 @@
+{
+  "redirects": [
+    { "source": "/mis-recetas", "destination": "https://miembros.recetassaborligero.com/", "permanent": false },
+    { "source": "/mis-recetas/:path*", "destination": "https://miembros.recetassaborligero.com/", "permanent": false },
+    { "source": "/miembros", "destination": "https://miembros.recetassaborligero.com/", "permanent": false }
+  ]
+}
