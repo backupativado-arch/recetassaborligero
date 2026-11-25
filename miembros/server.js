@@ -321,14 +321,7 @@ app.get('/admin', async (req, res) => {
   <header><div class="in"><b>Sabor Ligero</b><span>Painel de acessos</span><a href="/admin/sair">Sair</a></div></header>
   <main>
     ${flash}
-    <div class="box"><h2>Liberar acesso manualmente</h2>
-      <form class="row" method="post" action="/admin/adicionar">
-        <input name="email" type="email" placeholder="email@cliente.com" required aria-label="E-mail">
-        <input name="name" placeholder="Nome (opcional)" aria-label="Nome">
-        <button class="btn">Liberar acesso</button>
-      </form>
-    </div>
-    <div class="box"><h2>E-mails com acesso ao painel (${list.rowCount}${list.rowCount === 500 ? '+' : ''})</h2>
+    <div class="box"><h2>E-mails com acesso ao painel</h2>
       <form class="row" method="get" action="/admin" style="margin-bottom:12px">
         <input name="q" placeholder="Buscar por e-mail ou nome" value="${esc(q)}" aria-label="Buscar">
         <select name="status" aria-label="Filtrar status"><option value="">Todos</option><option value="active" ${filtro === 'active' ? 'selected' : ''}>Com acesso</option><option value="blocked" ${filtro === 'blocked' ? 'selected' : ''}>Bloqueados</option></select>
@@ -336,6 +329,13 @@ app.get('/admin', async (req, res) => {
       </form>
       <div class="tbl"><table><thead><tr><th>E-mail</th><th>Status</th><th>Ações</th></tr></thead>
       <tbody>${rows || '<tr><td colspan="3" class="muted">Nenhum e-mail ainda.</td></tr>'}</tbody></table></div>
+    </div>
+    <div class="box"><h2>Liberar acesso manualmente</h2>
+      <form class="row" method="post" action="/admin/adicionar">
+        <input name="email" type="email" placeholder="email@cliente.com" required aria-label="E-mail">
+        <input name="name" placeholder="Nome (opcional)" aria-label="Nome">
+        <button class="btn">Liberar acesso</button>
+      </form>
     </div>
     <div class="box"><h2>Integração 3B</h2>
       <p style="margin:0 0 8px">URL do webhook para colocar na 3B (Integrações → Webhook):</p>
