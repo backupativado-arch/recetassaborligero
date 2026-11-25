@@ -308,7 +308,7 @@ app.get('/admin', async (req, res) => {
   const list = await pool.query(`SELECT * FROM members ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY created_at DESC LIMIT 500`, args);
   const evs = await pool.query('SELECT id,type,email,result,received_at FROM webhook_events ORDER BY received_at DESC LIMIT 25');
   const host = `${req.protocol}://${req.get('host')}`;
-  const flash = req.query.ok ? `<div class="flash">${esc(req.query.ok)}</div>` : req.query.err ? `<div class="flash e">${esc(req.query.err)}</div>` : '';
+  const flash = req.query.err ? `<div class="flash e">${esc(req.query.err)}</div>` : '';
   const rows = list.rows.map(m => `<tr>
     <td><b>${esc(m.email)}</b>${m.name ? `<div class="muted">${esc(m.name)}</div>` : ''}</td>
     <td><span class="pill ${m.status === 'active' ? 'on' : 'off'}">${m.status === 'active' ? 'Com acesso' : 'Bloqueado'}</span>${m.note ? `<div class="muted">${esc(m.note)}</div>` : ''}</td>
@@ -353,18 +353,18 @@ app.post('/admin/adicionar', async (req, res) => {
   await pool.query(`INSERT INTO members (email, name, status, source) VALUES ($1,$2,'active','manual')
     ON CONFLICT (email) DO UPDATE SET status='active', name=COALESCE(EXCLUDED.name, members.name), note=NULL, updated_at=now()`,
     [email, String(req.body.name || '').trim() || null]);
-  res.redirect('/admin?ok=' + encodeURIComponent(`Acesso liberado para ${email}.`));
+  res.redirect('/admin');
 });
 app.post('/admin/status', async (req, res) => {
   const email = normEmail(req.body.email);
   const status = req.body.status === 'blocked' ? 'blocked' : 'active';
   await pool.query("UPDATE members SET status=$2, note=CASE WHEN $2='blocked' THEN 'bloqueado no painel' ELSE NULL END, updated_at=now() WHERE email=$1", [email, status]);
-  res.redirect('/admin?ok=' + encodeURIComponent(status === 'active' ? `${email} liberado.` : `${email} bloqueado.`));
+  res.redirect('/admin');
 });
 app.post('/admin/remover', async (req, res) => {
   const email = normEmail(req.body.email);
   await pool.query('DELETE FROM members WHERE email=$1', [email]);
-  res.redirect('/admin?ok=' + encodeURIComponent(`${email} removido.`));
+  res.redirect('/admin');
 });
 
 app.get('/health', (req, res) => res.send('ok'));
