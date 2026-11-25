@@ -306,12 +306,6 @@ app.get('/admin', async (req, res) => {
   if (q) { args.push('%' + q + '%'); where.push(`(email ILIKE $${args.length} OR COALESCE(name,'') ILIKE $${args.length})`); }
   if (filtro) { args.push(filtro); where.push(`status=$${args.length}`); }
   const list = await pool.query(`SELECT * FROM members ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY created_at DESC LIMIT 500`, args);
-  const st = (await pool.query(`SELECT
-      COUNT(*) FILTER (WHERE status='active') AS ativos,
-      COUNT(*) FILTER (WHERE status='blocked') AS bloqueados,
-      COUNT(*) FILTER (WHERE source='3b') AS via3b,
-      COUNT(*) FILTER (WHERE created_at > now() - interval '24 hours') AS hoje
-    FROM members`)).rows[0];
   const evs = await pool.query('SELECT id,type,email,result,received_at FROM webhook_events ORDER BY received_at DESC LIMIT 25');
   const host = `${req.protocol}://${req.get('host')}`;
   const flash = req.query.ok ? `<div class="flash">${esc(req.query.ok)}</div>` : req.query.err ? `<div class="flash e">${esc(req.query.err)}</div>` : '';
@@ -327,12 +321,6 @@ app.get('/admin', async (req, res) => {
   <header><div class="in"><b>Sabor Ligero</b><span>Painel de acessos</span><a href="/admin/sair">Sair</a></div></header>
   <main>
     ${flash}
-    <div class="stats">
-      <div class="stat"><b>${st.ativos}</b><span>com acesso</span></div>
-      <div class="stat"><b>${st.bloqueados}</b><span>bloqueados</span></div>
-      <div class="stat"><b>${st.via3b}</b><span>vieram da 3B</span></div>
-      <div class="stat"><b>${st.hoje}</b><span>novos nas últimas 24h</span></div>
-    </div>
     <div class="box"><h2>Liberar acesso manualmente</h2>
       <form class="row" method="post" action="/admin/adicionar">
         <input name="email" type="email" placeholder="email@cliente.com" required aria-label="E-mail">
