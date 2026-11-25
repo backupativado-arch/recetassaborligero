@@ -268,7 +268,7 @@ input,select{height:42px;border:1.5px solid #D9CCBE;border-radius:10px;padding:0
 input[name=email]{flex:2 1 220px}input[name=name]{flex:1 1 160px}input[name=q]{flex:1 1 240px}
 .btn{height:42px;border:0;border-radius:10px;padding:0 16px;font:inherit;font-weight:600;cursor:pointer;background:#B20404;color:#fff}
 .btn.s{background:#fff;color:#351714;border:1.5px solid #351714}.btn.sm{height:34px;padding:0 12px;font-size:13px}
-.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:760px}
+.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:560px}
 th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #EFE6DC;vertical-align:middle}th{font-size:12px;color:#6B4A45;text-transform:uppercase;letter-spacing:.5px}
 .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
 .on{background:#E3F4E1;color:#1E6B25}.off{background:#FBE3E3;color:#8A0A0A}
@@ -319,8 +319,6 @@ app.get('/admin', async (req, res) => {
     <td><b>${esc(m.email)}</b>${m.name ? `<div class="muted">${esc(m.name)}</div>` : ''}</td>
     <td><span class="pill ${m.status === 'active' ? 'on' : 'off'}">${m.status === 'active' ? 'Com acesso' : 'Bloqueado'}</span>${m.note ? `<div class="muted">${esc(m.note)}</div>` : ''}</td>
     <td>${m.source === '3b' ? '3B (compra)' : 'Manual'}${m.order_id ? `<div class="muted">${esc(m.order_id)}</div>` : ''}</td>
-    <td>${fmt(m.created_at)}</td>
-    <td>${fmt(m.last_login)}</td>
     <td style="white-space:nowrap">
       <form class="inline" method="post" action="/admin/status"><input type="hidden" name="email" value="${esc(m.email)}"><input type="hidden" name="status" value="${m.status === 'active' ? 'blocked' : 'active'}"><button class="btn s sm">${m.status === 'active' ? 'Bloquear' : 'Liberar'}</button></form>
       <form class="inline" method="post" action="/admin/remover" onsubmit="return confirm('Remover este e-mail da lista?')"><input type="hidden" name="email" value="${esc(m.email)}"><button class="btn s sm">Remover</button></form>
@@ -349,8 +347,8 @@ app.get('/admin', async (req, res) => {
         <select name="status" aria-label="Filtrar status"><option value="">Todos</option><option value="active" ${filtro === 'active' ? 'selected' : ''}>Com acesso</option><option value="blocked" ${filtro === 'blocked' ? 'selected' : ''}>Bloqueados</option></select>
         <button class="btn s">Filtrar</button>
       </form>
-      <div class="tbl"><table><thead><tr><th>E-mail</th><th>Status</th><th>Origem</th><th>Cadastro</th><th>Último login</th><th>Ações</th></tr></thead>
-      <tbody>${rows || '<tr><td colspan="6" class="muted">Nenhum e-mail ainda.</td></tr>'}</tbody></table></div>
+      <div class="tbl"><table><thead><tr><th>E-mail</th><th>Status</th><th>Origem</th><th>Ações</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="4" class="muted">Nenhum e-mail ainda.</td></tr>'}</tbody></table></div>
     </div>
     <div class="box"><h2>Integração 3B</h2>
       <p style="margin:0 0 8px">URL do webhook para colocar na 3B (Integrações → Webhook):</p>
